@@ -25,6 +25,11 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /** Version for database */
+    @Version
+    @Column(nullable = false)
+    private Long version;
+
     /**
      * Title of the task.
      *
