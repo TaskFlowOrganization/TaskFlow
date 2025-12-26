@@ -1,6 +1,5 @@
 package com.exxecute.taskflow.exception;
 
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,8 +16,8 @@ public class GlobalExceptionHandler {
     /**
      * Handle Business-errors (example: entity not found).
      */
-    @ExceptionHandler(ChangeSetPersister.NotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(ChangeSetPersister.NotFoundException ex) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException ex) {
 
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
