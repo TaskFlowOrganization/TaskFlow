@@ -23,9 +23,8 @@ public interface TaskService {
      * Get Task by ID.
      * @param id Task ID.
      * @return Task found by ID.
-     * @throws ChangeSetPersister.NotFoundException if not found a Task with this ID.
      */
-    Task getById(Long id) throws ChangeSetPersister.NotFoundException;
+    Task getById(Long id);
 
     /**
      * Get All Tasks.
@@ -38,14 +37,12 @@ public interface TaskService {
      * @param id ID of the Task to edit.
      * @param task Data to edit Task.
      * @return New Task.
-     * @throws ChangeSetPersister.NotFoundException if not found a Task with this ID.
      */
-    Task update(Long id, Task task) throws ChangeSetPersister.NotFoundException;
+    Task update(Long id, Task task);
 
     /**
      * Delete Task by ID.
      * @param id ID of the Task to delete.
-     * @throws ChangeSetPersister.NotFoundException if not found a Task with this ID.
      */
-    void delete(Long id) throws ChangeSetPersister.NotFoundException;
+    void delete(Long id);
 }

@@ -1,9 +1,9 @@
 package com.exxecute.taskflow.service;
 
+import com.exxecute.taskflow.exception.NotFoundException;
 import com.exxecute.taskflow.model.entity.Task;
 import com.exxecute.taskflow.repository.TaskRepository;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,12 +43,12 @@ public class TaskServiceImpl implements TaskService {
      * Get Task by ID.
      * @param id Task ID.
      * @return Task found by ID.
-     * @throws ChangeSetPersister.NotFoundException if not found a Task with this ID.
+     * @throws NotFoundException if not found a Task with this ID.
      */
     @Override
-    public Task getById(final Long id) throws ChangeSetPersister.NotFoundException {
+    public Task getById(final Long id) throws NotFoundException {
         return taskRepository.findById(id)
-                .orElseThrow(ChangeSetPersister.NotFoundException::new); /* TODO: custom exception not this */
+                .orElseThrow(() -> new NotFoundException("not found " + " task")); /* TODO: custom exception not this */
     }
 
     /**
@@ -65,10 +65,10 @@ public class TaskServiceImpl implements TaskService {
      * @param id ID of the Task to edit.
      * @param task Data to edit Task.
      * @return New Task.
-     * @throws ChangeSetPersister.NotFoundException if not found a Task with this ID.
+     * @throws NotFoundException if not found a Task with this ID.
      */
     @Override
-    public Task update(final Long id, final Task task) throws ChangeSetPersister.NotFoundException {
+    public Task update(final Long id, final Task task) throws NotFoundException {
         Task existingTask = getById(id);
         BeanUtils.copyProperties(task, existingTask, Task.ID_NAME); /* TODO: maybe create task mapper for this */
         return taskRepository.save(existingTask);
@@ -77,10 +77,10 @@ public class TaskServiceImpl implements TaskService {
     /**
      * Delete Task by ID.
      * @param id ID of the Task to delete.
-     * @throws ChangeSetPersister.NotFoundException if not found a Task with this ID.
+     * @throws NotFoundException if not found a Task with this ID.
      */
     @Override
-    public void delete(final Long id) throws ChangeSetPersister.NotFoundException {
+    public void delete(final Long id) throws NotFoundException {
         Task existingTask = getById(id);
         taskRepository.delete(existingTask);
     }
