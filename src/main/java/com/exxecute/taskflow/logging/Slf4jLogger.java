@@ -1,30 +1,28 @@
 package com.exxecute.taskflow.logging;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 
 
-public abstract class AbstractLogger {
+public class Slf4jLogger implements AppLogger {
 
-    protected final Logger log;
+    protected final org.slf4j.Logger log;
 
-    protected AbstractLogger(Class<?> clazz) {
-        this.log = LoggerFactory.getLogger(clazz);
+    protected Slf4jLogger(Class<?> clazz) {
+        this.log = org.slf4j.LoggerFactory.getLogger(clazz);
     }
 
-    protected void info(String message) {
+    public void info(String message) {
         log.info(message);
     }
 
-    protected void warn(String message) {
+    public void warn(String message) {
         log.warn(message);
     }
 
-    protected void error(String message, Throwable ex) {
+    public void error(String message, Throwable ex) {
         log.error(message, ex);
     }
 
-    protected void debug(String message) {
+    public void debug(String message) {
         log.debug(message);
     }
 
