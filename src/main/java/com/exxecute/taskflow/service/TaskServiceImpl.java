@@ -7,6 +7,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Implementation of task service.
@@ -26,6 +27,8 @@ public class TaskServiceImpl implements TaskService {
      * @param taskRepository Uses Task Repository.
      */
     public TaskServiceImpl(final TaskRepository taskRepository) {
+        Objects.requireNonNull(taskRepository, "Task repository must not be null");
+
         this.taskRepository = taskRepository;
     }
 
@@ -36,6 +39,8 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public Task create(final Task task) {
+        Objects.requireNonNull(task, "Task must not be null");
+
         return taskRepository.save(task);
     }
 
@@ -47,6 +52,8 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public Task getById(final Long id) throws NotFoundException {
+        Objects.requireNonNull(id, "Task id must not be null");
+
         return taskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("not found " + " task")); /* TODO: custom exception not this */
     }
@@ -69,6 +76,9 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public Task update(final Long id, final Task task) throws NotFoundException {
+        Objects.requireNonNull(id, "Task id must not be null");
+        Objects.requireNonNull(task, "Task must not be null");
+
         Task existingTask = getById(id);
         BeanUtils.copyProperties(task, existingTask, Task.ID_NAME); /* TODO: maybe create task mapper for this */
         return taskRepository.save(existingTask);
@@ -81,6 +91,8 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public void delete(final Long id) throws NotFoundException {
+        Objects.requireNonNull(id, "Task id must not be null");
+
         Task existingTask = getById(id);
         taskRepository.delete(existingTask);
     }
