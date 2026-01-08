@@ -16,8 +16,8 @@ public class GlobalExceptionHandler {
     /**
      * Handle Business-errors (example: entity not found).
      */
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException ex) {
+    @ExceptionHandler(TaskFlowException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(TaskFlowException ex) {
 
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),

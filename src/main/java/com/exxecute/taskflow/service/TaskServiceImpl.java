@@ -1,6 +1,6 @@
 package com.exxecute.taskflow.service;
 
-import com.exxecute.taskflow.exception.NotFoundException;
+import com.exxecute.taskflow.exception.TaskFlowException;
 import com.exxecute.taskflow.model.entity.Task;
 import com.exxecute.taskflow.repository.TaskRepository;
 import org.springframework.beans.BeanUtils;
@@ -48,14 +48,14 @@ public class TaskServiceImpl implements TaskService {
      * Get Task by ID.
      * @param id Task ID.
      * @return Task found by ID.
-     * @throws NotFoundException if not found a Task with this ID.
+     * @throws TaskFlowException if not found a Task with this ID.
      */
     @Override
-    public Task getById(final Long id) throws NotFoundException {
+    public Task getById(final Long id) throws TaskFlowException {
         Objects.requireNonNull(id, "Task id must not be null");
 
         return taskRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("not found " + " task")); /* TODO: custom exception not this */
+                .orElseThrow(() -> new TaskFlowException("not found " + " task")); /* TODO: custom exception not this */
     }
 
     /**
@@ -72,10 +72,10 @@ public class TaskServiceImpl implements TaskService {
      * @param id ID of the Task to edit.
      * @param task Data to edit Task.
      * @return New Task.
-     * @throws NotFoundException if not found a Task with this ID.
+     * @throws TaskFlowException if not found a Task with this ID.
      */
     @Override
-    public Task update(final Long id, final Task task) throws NotFoundException {
+    public Task update(final Long id, final Task task) throws TaskFlowException {
         Objects.requireNonNull(id, "Task id must not be null");
         Objects.requireNonNull(task, "Task must not be null");
 
@@ -87,10 +87,10 @@ public class TaskServiceImpl implements TaskService {
     /**
      * Delete Task by ID.
      * @param id ID of the Task to delete.
-     * @throws NotFoundException if not found a Task with this ID.
+     * @throws TaskFlowException if not found a Task with this ID.
      */
     @Override
-    public void delete(final Long id) throws NotFoundException {
+    public void delete(final Long id) throws TaskFlowException {
         Objects.requireNonNull(id, "Task id must not be null");
 
         Task existingTask = getById(id);

@@ -5,13 +5,13 @@ package com.exxecute.taskflow.exception;
  *
  * @author Uladzislau Mikhayevich
  */
-public class NotFoundException extends RuntimeException {
+public class TaskFlowException extends RuntimeException {
 
     /**
      * exception constructor.
      * @param message message for exception.
      */
-    public NotFoundException(String message) {
+    public TaskFlowException(String message) {
         super(message);
     }
 }
