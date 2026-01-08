@@ -1,4 +1,4 @@
-package com.exxecute.taskflow.exception;
+package com.exxecute.taskflow.exception.global;
 
 /**
  * Custom Not Found Exception.

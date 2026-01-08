@@ -1,6 +1,6 @@
 package com.exxecute.taskflow.service;
 
-import com.exxecute.taskflow.exception.TaskFlowException;
+import com.exxecute.taskflow.exception.global.TaskFlowException;
 import com.exxecute.taskflow.model.entity.Task;
 import com.exxecute.taskflow.repository.TaskRepository;
 import org.springframework.beans.BeanUtils;
