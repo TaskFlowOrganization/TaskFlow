@@ -1,7 +1,7 @@
 package com.exxecute.taskflow.exception.global;
 
 /**
- * Custom Not Found Exception.
+ * Custom Task Flow Exception.
  *
  * @author Uladzislau Mikhayevich
  */
