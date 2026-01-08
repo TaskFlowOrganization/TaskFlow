@@ -65,4 +65,9 @@ public class Task {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
+
+    /**
+     * String definition of id name.
+     */
+    public final static String ID_NAME = "id";
 }
