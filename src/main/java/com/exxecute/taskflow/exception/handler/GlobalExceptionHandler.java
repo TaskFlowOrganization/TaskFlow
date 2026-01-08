@@ -1,5 +1,6 @@
-package com.exxecute.taskflow.exception;
+package com.exxecute.taskflow.exception.handler;
 
+import com.exxecute.taskflow.exception.ErrorResponse;
 import com.exxecute.taskflow.exception.global.TaskFlowException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
