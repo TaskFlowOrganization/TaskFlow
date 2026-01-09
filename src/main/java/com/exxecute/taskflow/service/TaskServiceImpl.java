@@ -3,6 +3,7 @@ package com.exxecute.taskflow.service;
 import com.exxecute.taskflow.exception.found.TaskNotFoundException;
 import com.exxecute.taskflow.model.dto.TaskDto;
 import com.exxecute.taskflow.model.entity.Task;
+import com.exxecute.taskflow.service.TaskRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
