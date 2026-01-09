@@ -1,5 +1,7 @@
-package com.exxecute.taskflow.exception;
+package com.exxecute.taskflow.exception.handler;
 
+import com.exxecute.taskflow.exception.responce.ErrorResponse;
+import com.exxecute.taskflow.exception.global.TaskFlowException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,8 +18,8 @@ public class GlobalExceptionHandler {
     /**
      * Handle Business-errors (example: entity not found).
      */
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException ex) {
+    @ExceptionHandler(TaskFlowException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(TaskFlowException ex) {
 
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
