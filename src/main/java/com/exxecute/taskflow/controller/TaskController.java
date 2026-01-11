@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
+import com.exxecute.taskflow.model.dto.TaskDto;
 
 import java.util.List;
 
@@ -44,8 +45,7 @@ public class TaskController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Task updateTask(@PathVariable Long id,
-                           @Valid @RequestBody Task taskUpdate) {
+    public Task updateTask(@PathVariable Long id, @Valid @RequestBody TaskDto taskUpdate) {
         log.info("TaskController:updateTask, id: " + id);
         return taskService.update(id, taskUpdate);
     }
