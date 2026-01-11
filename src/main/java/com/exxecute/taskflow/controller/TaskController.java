@@ -35,5 +35,12 @@ public class TaskController {
         return taskService.getById(id);
     }
 
+    @PutMapping
+    public Task updateTask(@PathVariable Long id,
+                           @RequestBody Task taskUpdate) {
+        log.info("TaskController:updateTask, id: ");
+        return taskService.update(id, taskUpdate);
+    }
+
 
 }
