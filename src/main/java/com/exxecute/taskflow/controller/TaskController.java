@@ -28,5 +28,11 @@ public class TaskController {
         return taskService.create(taskCreate);
     }
 
+    @GetMapping("/{id}")
+    public Task getByID(@PathVariable Long id) {
+        log.info("TaskController:getByID");
+        return taskService.getById(id);
+    }
+
 
 }

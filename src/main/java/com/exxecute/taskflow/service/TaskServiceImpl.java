@@ -1,5 +1,6 @@
 package com.exxecute.taskflow.service;
 
+import com.exxecute.taskflow.exception.found.NotFoundException;
 import com.exxecute.taskflow.exception.global.TaskFlowException;
 import com.exxecute.taskflow.model.entity.Task;
 import com.exxecute.taskflow.service.TaskRepository;
@@ -55,7 +56,7 @@ public class TaskServiceImpl implements TaskService {
         Objects.requireNonNull(id, "Task id must not be null");
 
         return taskRepository.findById(id)
-                .orElseThrow(() -> new TaskFlowException("not found " + " task")); /* TODO: custom exception not this */
+                .orElseThrow(() -> new NotFoundException("not found ",id));
     }
 
     /**
