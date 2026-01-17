@@ -1,6 +1,7 @@
 package com.exxecute.taskflow.controller;
 import com.exxecute.taskflow.logging.AppLogger;
 import com.exxecute.taskflow.logging.LoggerFactory;
+import com.exxecute.taskflow.model.dto.TaskDto;
 import com.exxecute.taskflow.model.entity.Task;
 import com.exxecute.taskflow.service.TaskService;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class TaskController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Task createTask(@RequestBody Task taskCreate) {
+    public Task createTask(@RequestBody TaskDto taskCreate) {
         log.info("TaskController:createTask");
         return taskService.create(taskCreate);
     }
