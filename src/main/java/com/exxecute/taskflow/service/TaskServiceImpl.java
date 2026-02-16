@@ -1,6 +1,7 @@
 package com.exxecute.taskflow.service;
 
 import com.exxecute.taskflow.exception.found.TaskNotFoundException;
+import com.exxecute.taskflow.model.dto.TaskDto;
 import com.exxecute.taskflow.model.entity.Task;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -33,12 +34,15 @@ public class TaskServiceImpl implements TaskService {
 
     /**
      * Create new Task.
-     * @param task New Task to create.
+     * @param taskDto New Task to create.
      * @return New created Task.
      */
     @Override
-    public Task create(final Task task) {
-        Objects.requireNonNull(task, "Task must not be null");
+    public Task create(final TaskDto taskDto) {
+        Objects.requireNonNull(taskDto, "Task must not be null");
+
+        Task task = new Task();
+        BeanUtils.copyProperties(taskDto, task, Task.ID_NAME); /* TODO: maybe create task mapper for this */
 
         return taskRepository.save(task);
     }
@@ -69,17 +73,17 @@ public class TaskServiceImpl implements TaskService {
     /**
      * Put new data to created Task.
      * @param id ID of the Task to edit.
-     * @param task Data to edit Task.
+     * @param taskDto Data to edit Task.
      * @return New Task.
      * @throws TaskNotFoundException if not found a Task with this ID.
      */
     @Override
-    public Task update(final Long id, final Task task) throws TaskNotFoundException {
+    public Task update(final Long id, final TaskDto taskDto) throws TaskNotFoundException {
         Objects.requireNonNull(id, "Task id must not be null");
-        Objects.requireNonNull(task, "Task must not be null");
+        Objects.requireNonNull(taskDto, "Task must not be null");
 
         Task existingTask = getById(id);
-        BeanUtils.copyProperties(task, existingTask, Task.ID_NAME); /* TODO: maybe create task mapper for this */
+        BeanUtils.copyProperties(taskDto, existingTask, Task.ID_NAME); /* TODO: maybe create task mapper for this */
         return taskRepository.save(existingTask);
     }
 
