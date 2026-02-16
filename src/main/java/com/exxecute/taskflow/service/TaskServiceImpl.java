@@ -2,7 +2,11 @@ package com.exxecute.taskflow.service;
 
 import com.exxecute.taskflow.exception.found.TaskNotFoundException;
 import com.exxecute.taskflow.model.dto.TaskDto;
+import com.exxecute.taskflow.exception.found.NotFoundException;
+import com.exxecute.taskflow.exception.global.TaskFlowException;
+import com.exxecute.taskflow.model.dto.TaskDto;
 import com.exxecute.taskflow.model.entity.Task;
+import com.exxecute.taskflow.service.TaskRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +48,10 @@ public class TaskServiceImpl implements TaskService {
         Task task = new Task();
         BeanUtils.copyProperties(taskDto, task, Task.ID_NAME); /* TODO: maybe create task mapper for this */
 
+        Objects.requireNonNull(taskDto, "Task must not be null");
+
+        Task task = new Task();
+        BeanUtils.copyProperties(taskDto, task);
         return taskRepository.save(task);
     }
 
