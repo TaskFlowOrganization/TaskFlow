@@ -50,7 +50,6 @@ public class TaskServiceImpl implements TaskService {
 
         Objects.requireNonNull(taskDto, "Task must not be null");
 
-        Task task = new Task();
         BeanUtils.copyProperties(taskDto, task);
         return taskRepository.save(task);
     }
