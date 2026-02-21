@@ -6,9 +6,13 @@ import com.exxecute.taskflow.exception.found.NotFoundException;
 import com.exxecute.taskflow.exception.global.TaskFlowException;
 import com.exxecute.taskflow.model.dto.TaskDto;
 import com.exxecute.taskflow.model.entity.Task;
+import com.exxecute.taskflow.model.entity.User;
+import com.exxecute.taskflow.repository.JpaUserRepository;
 import com.exxecute.taskflow.service.TaskRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,21 +23,41 @@ import java.util.Objects;
  * @author Uladzislau Mikhayevich
  */
 @Service
+@RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
     /**
      * Task Repository.
      */
     private final TaskRepository taskRepository;
+    private final JpaUserRepository userRepository;
 
     /**
-     * Constructor.
-     *
-     * @param taskRepository Uses Task Repository.
+     * Assigning Task to User.
+     * Entities should exist in db.
+     * @param taskId Task id entity.
+     * @param userId User id entity.
      */
-    public TaskServiceImpl(final TaskRepository taskRepository) {
-        Objects.requireNonNull(taskRepository, "Task repository must not be null");
+    @Override
+    @Transactional
+    public void assignTaskToUser(Long taskId, Long userId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException(taskId));
 
-        this.taskRepository = taskRepository;
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User", userId));
+
+        task.setUser(user);
+    }
+
+    /**
+     * Get Tasks By User.
+     * @param userId User id.
+     * @return List of the tasks that assigned to user.
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<Task> getTasksByUser(Long userId) {
+        return this.taskRepository.findByUserId(userId);
     }
 
     /**
