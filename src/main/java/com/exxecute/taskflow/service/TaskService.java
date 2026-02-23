@@ -47,4 +47,19 @@ public interface TaskService {
      * @param id ID of the Task to delete.
      */
     void delete(Long id);
+
+    /**
+     * Assigning Task to User.
+     * Entities should exist in db.
+     * @param taskId Task id entity.
+     * @param userId User id entity.
+     */
+    void assignTaskToUser(Long taskId, Long userId);
+
+    /**
+     * Get Tasks By User.
+     * @param userId User id.
+     * @return List of the tasks that assigned to user.
+     */
+    List<Task> getTasksByUser(Long userId);
 }

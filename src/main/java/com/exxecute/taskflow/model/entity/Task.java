@@ -70,4 +70,8 @@ public class Task {
      * String definition of id name.
      */
     public final static String ID_NAME = "id";
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

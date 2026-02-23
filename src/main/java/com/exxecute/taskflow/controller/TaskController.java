@@ -62,4 +62,31 @@ public class TaskController {
         log.info("TaskController:deleteTask, id: " + id);
         taskService.delete(id);
     }
+
+    /**
+     * PUT /tasks/{taskId}/assign/{userId}
+     * Assigning Task to User.
+     * @param taskId Task id entity.
+     * @param userId User id entity.
+     */
+    @PutMapping("/{taskId}/assign/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void assignTaskToUser(@PathVariable Long taskId,
+                                 @PathVariable Long userId) {
+        log.info(String.format("TaskController:assignTaskToUser, taskId=%d, userId=%d", taskId, userId));
+        taskService.assignTaskToUser(taskId, userId);
+    }
+
+    /**
+     * GET /tasks/user/{userId}
+     * Get Tasks By User.
+     * @param userId User id.
+     * @return List of the tasks that assigned to user.
+     */
+    @GetMapping("/user/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Task> getTasksByUser(@PathVariable Long userId) {
+        log.info(String.format("TaskController:getTasksByUser, userId=%d", userId));
+        return taskService.getTasksByUser(userId);
+    }
 }
