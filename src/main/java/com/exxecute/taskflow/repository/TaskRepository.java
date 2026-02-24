@@ -19,4 +19,5 @@ public interface TaskRepository  {
 
     List<Task> findByTitle(String title);
 
+    List<Task> findByUserId(Long userId);
 }
