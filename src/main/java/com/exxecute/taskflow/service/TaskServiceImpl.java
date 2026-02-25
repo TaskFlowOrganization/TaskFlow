@@ -5,7 +5,6 @@ import com.exxecute.taskflow.exception.found.TaskNotFoundException;
 import com.exxecute.taskflow.model.dto.TaskDto;
 import com.exxecute.taskflow.model.entity.Task;
 import com.exxecute.taskflow.model.entity.User;
-import com.exxecute.taskflow.repository.JpaUserRepository;
 import com.exxecute.taskflow.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -27,7 +26,6 @@ public class TaskServiceImpl implements TaskService {
      * Task Repository.
      */
     private final TaskRepository taskRepository;
-    private final JpaUserRepository userRepository;
 
     /**
      * Assigning Task to User.
@@ -41,10 +39,8 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException(taskId));
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User", userId));
-
-        task.setUser(user);
+//        User user = userRepository.findByUserId(userId)
+//                .orElseThrow(() -> new TaskNotFoundException(userId)); я не понял откуда у нас взялся userRepo
     }
 
     /**
