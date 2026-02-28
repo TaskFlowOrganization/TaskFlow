@@ -1,6 +1,7 @@
 package com.exxecute.taskflow.controller;
 
 import com.exxecute.taskflow.model.dto.TaskDto;
+import com.exxecute.taskflow.model.enums.Status;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,7 @@ public class TaskControllerTest {
 
         TaskDto dto = new TaskDto();
         dto.setTitle(integrationalTaskName);
+        dto.setStatus(Status.NEW);
 
         /* Create task */
         String response = mockMvc.perform(post(CONTROLLER_URL)
@@ -83,4 +85,89 @@ public class TaskControllerTest {
         mockMvc.perform(delete(integrationalTaskExpectedUrl))
                 .andExpect(status().isNoContent());
     }
+
+    /**
+     * Should return 400 if title is null.
+     */
+    @Test
+    void createTask_shouldFail_whenTitleIsNull() throws Exception {
+
+        TaskDto dto = new TaskDto();
+        dto.setTitle(null);
+        dto.setStatus(Status.NEW);
+
+        mockMvc.perform(post(CONTROLLER_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    /**
+     * Should return 400 if status is null.
+     */
+    @Test
+    void createTask_shouldFail_whenStatusIsNull() throws Exception {
+
+        TaskDto dto = new TaskDto();
+        dto.setTitle(this.getClass().getName());
+        dto.setStatus(null);
+
+        mockMvc.perform(post(CONTROLLER_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    /**
+     * Should return 400 if title is empty.
+     */
+    @Test
+    void createTask_shouldFail_whenTitleIsEmpty() throws Exception {
+
+        TaskDto dto = new TaskDto();
+        dto.setTitle("");
+        dto.setStatus(Status.NEW);
+
+        mockMvc.perform(post(CONTROLLER_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    /**
+     * Should return 400 if description is too long.
+     */
+    @Test
+    void createTask_shouldFail_whenDescriptionTooLong() throws Exception {
+
+        TaskDto dto = new TaskDto();
+        dto.setTitle(this.getClass().getName());
+        dto.setStatus(Status.NEW);
+        dto.setDescription("a".repeat(5001));
+
+        mockMvc.perform(post(CONTROLLER_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    /**
+     * Should create task when DTO is valid.
+     */
+    @Test
+    void createTask_shouldSucceed_whenDtoIsValid() throws Exception {
+
+        TaskDto dto = new TaskDto();
+        dto.setTitle(this.getClass().getName());
+        dto.setStatus(Status.NEW);
+        dto.setDescription("Some description");
+
+        mockMvc.perform(post(CONTROLLER_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.title").value(this.getClass().getName()));
+    }
+
+    /* TODO: SCRUM-37 assigning task to user (Need to add users). */
 }
