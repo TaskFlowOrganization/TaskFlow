@@ -19,6 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TaskControllerTest {
+    private final static String CONTROLLER_URL = "/tasks";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -27,10 +29,17 @@ public class TaskControllerTest {
 
     @Test
     void fullFlowTest() throws Exception {
-        TaskDto dto = new TaskDto();
-        dto.setTitle("Integration Task");
+        String integrationalTaskName = this.getClass().getName();
 
-        String response = mockMvc.perform(post("/tasks")
+        StringBuilder sb = new StringBuilder(CONTROLLER_URL)
+                .append("/")
+                .append(1);
+        String integrationalTaskExpectedUrl = sb.toString();
+
+        TaskDto dto = new TaskDto();
+        dto.setTitle(integrationalTaskName);
+
+        String response = mockMvc.perform(post(CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
@@ -38,15 +47,15 @@ public class TaskControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        mockMvc.perform(get("/tasks/1"))
+        mockMvc.perform(get(integrationalTaskExpectedUrl))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("Integration Task"));
+                .andExpect(jsonPath("$.title").value(integrationalTaskName));
 
-        mockMvc.perform(get("/tasks"))
+        mockMvc.perform(get(CONTROLLER_URL))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].title").value("Integration Task"));
+                .andExpect(jsonPath("$[0].title").value(integrationalTaskName));
 
-        mockMvc.perform(delete("/tasks/1"))
+        mockMvc.perform(delete(integrationalTaskExpectedUrl))
                 .andExpect(status().isNoContent());
     }
 }
