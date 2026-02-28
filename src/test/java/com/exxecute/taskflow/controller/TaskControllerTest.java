@@ -16,21 +16,42 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
+/**
+ * Task Controller Test Class.
+ * Needs for testing all controller operations.
+ *
+ * @author Uladzislau Mikhayevich
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TaskControllerTest {
+    /**
+     * Controller URL.
+     */
     private final static String CONTROLLER_URL = "/tasks";
 
+    /**
+     * Web Layer for test.
+     */
     @Autowired
     private MockMvc mockMvc;
 
+    /**
+     * Mapper.
+     */
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * Tests setting task to application via controller.
+     * @throws Exception Test exceptions.
+     */
     @Test
     void fullFlowTest() throws Exception {
+        /* Test name like class */
         String integrationalTaskName = this.getClass().getName();
 
+        /* CONTROLLER_URL/{expected task id} */
         StringBuilder sb = new StringBuilder(CONTROLLER_URL)
                 .append("/")
                 .append(1);
@@ -39,6 +60,7 @@ public class TaskControllerTest {
         TaskDto dto = new TaskDto();
         dto.setTitle(integrationalTaskName);
 
+        /* Create task */
         String response = mockMvc.perform(post(CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
@@ -47,14 +69,17 @@ public class TaskControllerTest {
                 .getResponse()
                 .getContentAsString();
 
+        /* Get task */
         mockMvc.perform(get(integrationalTaskExpectedUrl))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(integrationalTaskName));
 
+        /* Get task */
         mockMvc.perform(get(CONTROLLER_URL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].title").value(integrationalTaskName));
 
+        /* Delete task */
         mockMvc.perform(delete(integrationalTaskExpectedUrl))
                 .andExpect(status().isNoContent());
     }
