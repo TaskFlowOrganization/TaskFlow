@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Uladzislau Mikhayevich
  */
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class TaskControllerTest {
     /**
      * Controller URL.
@@ -52,12 +52,6 @@ public class TaskControllerTest {
         /* Test name like class */
         String integrationalTaskName = this.getClass().getName();
 
-        /* CONTROLLER_URL/{expected task id} */
-        StringBuilder sb = new StringBuilder(CONTROLLER_URL)
-                .append("/")
-                .append(1);
-        String integrationalTaskExpectedUrl = sb.toString();
-
         TaskDto dto = new TaskDto();
         dto.setTitle(integrationalTaskName);
         dto.setStatus(Status.NEW);
@@ -71,8 +65,11 @@ public class TaskControllerTest {
                 .getResponse()
                 .getContentAsString();
 
+        Long ceratedId = objectMapper.readTree(response).get("id").asLong();
+        String taskUrl = CONTROLLER_URL + "/" + ceratedId;
+
         /* Get task */
-        mockMvc.perform(get(integrationalTaskExpectedUrl))
+        mockMvc.perform(get(taskUrl))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(integrationalTaskName));
 
@@ -82,7 +79,7 @@ public class TaskControllerTest {
                 .andExpect(jsonPath("$[0].title").value(integrationalTaskName));
 
         /* Delete task */
-        mockMvc.perform(delete(integrationalTaskExpectedUrl))
+        mockMvc.perform(delete(taskUrl))
                 .andExpect(status().isNoContent());
     }
 
