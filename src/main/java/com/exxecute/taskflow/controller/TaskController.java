@@ -31,7 +31,7 @@ public class TaskController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Task createTask(@Valid@RequestBody TaskDto taskCreate) {
+    public Task createTask(@Valid @RequestBody TaskDto taskCreate) {
         log.info("TaskController:createTask");
         return taskService.create(taskCreate);
     }

@@ -16,8 +16,8 @@ services:
 
   app:
     build:
-      context: config
-      dockerfile: config/Dockerfile
+      context: .
+      dockerfile: Dockerfile
     container_name: taskflow-app
     ports:
       - "8080:8080"
