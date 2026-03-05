@@ -1,6 +1,7 @@
 package com.exxecute.taskflow.model.dto;
 
 import com.exxecute.taskflow.model.enums.Status;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -19,8 +20,8 @@ public class TaskDto {
      * Title of the task.
      * Max 255 symbols.
      */
-    @NotNull(message = "Title must not be null")
-    @Size(min = 1, max = 255, message = "Title length must be between 1 and 255 characters")
+    @NotBlank(message = "Title must not be null")
+    @Size(max = 255, message = "Title length must be between 1 and 255 characters")
     private String title;
 
     /**
