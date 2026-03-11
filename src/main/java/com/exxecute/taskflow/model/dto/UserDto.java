@@ -1,7 +1,5 @@
 package com.exxecute.taskflow.model.dto;
 
-
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -15,6 +13,7 @@ public class UserDto {
     @Size(min = 3, max = 30, message = "Username length must be from 3 to 30 ")
     private String username;
 
-    @Email(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")
+    @Email(message = " Invalid email format")
+    @NotBlank(message = " Email can't be empty")
     private String email;
 }

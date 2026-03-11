@@ -1,5 +1,6 @@
 package com.exxecute.taskflow.service;
 
+import com.exxecute.taskflow.exception.found.UserNotFoundException;
 import com.exxecute.taskflow.model.dto.UserDto;
 import com.exxecute.taskflow.model.entity.User;
 import com.exxecute.taskflow.repository.UserRepository;
@@ -40,21 +41,21 @@ public class UserServiceImpl implements UserService {
     public User getById(final Long id)  {
         Objects.requireNonNull(id, "id must not be null");
         return userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User with id " + id + " not found"));
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
 
     @Override
     public User getByEmail(final String email) {
         Objects.requireNonNull(email, "email must not be null");
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User with email " + email + " not found"));
+                .orElseThrow(() -> new UserNotFoundException("email" , email));
     }
 
     @Override
     public User getByUsername(final String username) {
         Objects.requireNonNull(username, "username must not be null");
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User with name " + username + " not found"));
+                .orElseThrow(() -> new UserNotFoundException("username", username));
     }
 
     @Override
@@ -62,7 +63,4 @@ public class UserServiceImpl implements UserService {
         Objects.requireNonNull(id, "id must not be null");
         userRepository.deleteById(id);
     }
-
-
-
 }
