@@ -43,13 +43,16 @@ public class UserControllerTest {
     @Autowired
     private EntityManager entityManager;
 
+    private final static String USER_URL = "/users";
+
+
     @Test
     void createUserTest() throws Exception {
         UserDto userDto = new UserDto();
         userDto.setUsername("test");
         userDto.setEmail("test@gmail.com");
 
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post(USER_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userDto)))
                 .andDo(print())
@@ -65,7 +68,7 @@ public class UserControllerTest {
         userDto.setUsername("");
         userDto.setEmail("test@gmail.com");
 
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post(USER_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userDto)))
                 .andDo(print())
@@ -78,7 +81,7 @@ public class UserControllerTest {
         userDto.setUsername("test");
         userDto.setEmail("");
 
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post(USER_URL)
         .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userDto)))
                 .andDo(print())
@@ -91,7 +94,7 @@ public class UserControllerTest {
         userDto.setUsername("test");
         userDto.setEmail("abobas");
 
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post(USER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userDto)))
                 .andDo(print())
@@ -106,7 +109,7 @@ public class UserControllerTest {
         createDto.setEmail("oldTest@gmail.com");
 
 
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post(USER_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createDto)))
                 .andDo(print())
@@ -139,7 +142,7 @@ public class UserControllerTest {
         createDto.setUsername("oldTest");
         createDto.setEmail("oldTest@gmail.com");
 
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post(USER_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createDto)))
                 .andDo(print())
@@ -210,7 +213,7 @@ public class UserControllerTest {
         createDto.setUsername("oldTest");
         createDto.setEmail("oldTest@gmail.com");
 
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post(USER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createDto)))
                 .andDo(print())
@@ -244,7 +247,7 @@ public class UserControllerTest {
          userDto.setUsername("newTest");
          userDto.setEmail("newTest@gmail.com");
 
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post(USER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userDto)))
                 .andDo(print())
@@ -274,7 +277,7 @@ public class UserControllerTest {
         userDto.setUsername("newTest");
         userDto.setEmail("newTest@gmail.com");
 
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post(USER_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userDto)))
                 .andDo(print())
@@ -301,7 +304,7 @@ public class UserControllerTest {
         userDto.setUsername("newTest");
         userDto.setEmail("newTest@gmail.com");
 
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post(USER_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userDto)))
                 .andDo(print())
