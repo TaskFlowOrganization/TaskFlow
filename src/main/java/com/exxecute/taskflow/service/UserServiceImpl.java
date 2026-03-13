@@ -61,6 +61,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(final Long id) {
         Objects.requireNonNull(id, "id must not be null");
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
         userRepository.deleteById(id);
     }
 }

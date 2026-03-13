@@ -17,10 +17,16 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -230,5 +236,115 @@ public class UserControllerTest {
 
         assertEquals("oldTest", updatedUser.getUsername());
         assertEquals("oldTest@gmail.com", updatedUser.getEmail());
+    }
+
+    @Test
+    void getUserById() throws Exception {
+         UserDto userDto = new UserDto();
+         userDto.setUsername("newTest");
+         userDto.setEmail("newTest@gmail.com");
+
+        mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userDto)))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        Long id = userRepository.findAll().stream().findFirst().get().getId();
+
+          mockMvc.perform(get("/users/{id}", id))
+                  .andDo(print())
+                  .andExpect(status().isOk())
+                  .andExpect(jsonPath("$.username").value("newTest"))
+                  .andExpect(jsonPath("$.email").value("newTest@gmail.com"));
+
+    }
+
+    @Test
+    void getUserById_shouldFail_whenIdIsIncorrect() throws Exception {
+
+        mockMvc.perform(get("/users/{id}", 999))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getUserByUsername() throws Exception {
+        UserDto userDto = new UserDto();
+        userDto.setUsername("newTest");
+        userDto.setEmail("newTest@gmail.com");
+
+        mockMvc.perform(post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userDto)))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/users/username/{username}", userDto.getUsername()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("newTest"))
+                .andExpect(jsonPath("$.email").value("newTest@gmail.com"));
+    }
+
+    @Test
+    void getUserByUsername_shouldFail_whenUsernameIsIncorrect() throws Exception {
+
+        mockMvc.perform(get("/users/username/{username}", "alesha"))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getUserByEmail() throws Exception {
+        UserDto userDto = new UserDto();
+        userDto.setUsername("newTest");
+        userDto.setEmail("newTest@gmail.com");
+
+        mockMvc.perform(post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userDto)))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/users/email/{email}", userDto.getEmail()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("newTest"))
+                .andExpect(jsonPath("$.email").value("newTest@gmail.com"));
+    }
+
+    @Test
+    void getUserByEmail_shouldFail_whenEmailIsIncorrect() throws Exception {
+        mockMvc.perform(get("/users/email/{email}", "alesha"))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteUser() throws Exception {
+        UserDto userDto = new UserDto();
+        userDto.setUsername("newTest");
+        userDto.setEmail("newTest@gmail.com");
+
+        mockMvc.perform(post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userDto)))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        Long id = userRepository.findAll().stream().findFirst().get().getId();
+
+        mockMvc.perform(delete("/users/{id}", id))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+
+        assertFalse(userRepository.findById(id).isPresent());
+    }
+
+    @Test
+    void deleteUser_shouldReturn404_whenUserNotFound() throws Exception {
+        mockMvc.perform(delete("/users/{id}", 999))
+                .andExpect(status().isNotFound());
     }
 }
