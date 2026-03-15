@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping("/users")
 public class UserController {
 
-    private static final AppLogger log = LoggerFactory.getLogger(TaskController.class);
+    private static final AppLogger log = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
 
@@ -35,28 +35,24 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public User createUser(@Valid @RequestBody UserDto userCreate) {
-        log.info("User created");
         return userService.create(userCreate);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public User getUserById(@Valid @PathVariable Long id) {
-        log.info("getUserById");
         return userService.getById(id);
     }
 
     @GetMapping("/username/{username}")
     @ResponseStatus(HttpStatus.OK)
     public User getUserByUsername(@Valid @PathVariable String username) {
-        log.info("getUserByUsername");
         return userService.getByUsername(username);
     }
 
     @GetMapping("/email/{email}")
     @ResponseStatus(HttpStatus.OK)
     public User getUserByEmail(@Valid @PathVariable String email) {
-        log.info("getUserByEmail");
         return userService.getByEmail(email);
     }
 
@@ -64,14 +60,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateUser(@PathVariable Long id,
                            @Valid @RequestBody UserDto userUpdate) {
-        log.info("updateUser");
         userService.update(id, userUpdate);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long id) {
-        log.info("Delete user, id: " + id);
         userService.delete(id);
     }
 }

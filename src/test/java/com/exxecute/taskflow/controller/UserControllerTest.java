@@ -6,6 +6,7 @@ import com.exxecute.taskflow.repository.UserRepository;
 import com.exxecute.taskflow.service.UserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
-
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -34,6 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 public class UserControllerTest {
 
+    private final static String USER_URL = "/users";
+
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -43,14 +42,15 @@ public class UserControllerTest {
     @Autowired
     private EntityManager entityManager;
 
-    private final static String USER_URL = "/users";
-
+    @AfterEach
+    void clearDb() {
+        entityManager.flush();
+        entityManager.clear();
+    }
 
     @Test
     void createUserTest() throws Exception {
-        UserDto userDto = new UserDto();
-        userDto.setUsername("test");
-        userDto.setEmail("test@gmail.com");
+        UserDto userDto = new UserDto("test", "test@gmail.com");
 
         mockMvc.perform(post(USER_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -63,10 +63,8 @@ public class UserControllerTest {
     }
 
     @Test
-    void createUser_shouldFail_whenUsernameIsEmpty() throws Exception {
-        UserDto userDto = new UserDto();
-        userDto.setUsername("");
-        userDto.setEmail("test@gmail.com");
+    void createUserShouldFailWhenUsernameIsEmpty() throws Exception {
+        UserDto userDto = new UserDto("","test@gmail.com" );
 
         mockMvc.perform(post(USER_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -76,10 +74,8 @@ public class UserControllerTest {
     }
 
     @Test
-    void createUser_shouldFail_whenEmailIsEmpty() throws Exception {
-        UserDto userDto = new UserDto();
-        userDto.setUsername("test");
-        userDto.setEmail("");
+    void createUserShouldFailWhenEmailIsEmpty() throws Exception {
+        UserDto userDto = new UserDto("test", "");
 
         mockMvc.perform(post(USER_URL)
         .contentType(MediaType.APPLICATION_JSON)
@@ -89,10 +85,8 @@ public class UserControllerTest {
     }
 
     @Test
-    void createUser_shouldFail_whenEmailIsIncorrect() throws Exception {
-        UserDto userDto = new UserDto();
-        userDto.setUsername("test");
-        userDto.setEmail("abobas");
+    void createUserShouldFailWhenEmailIsIncorrect() throws Exception {
+        UserDto userDto = new UserDto("test","abobas" );
 
         mockMvc.perform(post(USER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -103,11 +97,7 @@ public class UserControllerTest {
 
     @Test
     void updateUserTest() throws Exception {
-
-        UserDto createDto = new UserDto();
-        createDto.setUsername("oldTest");
-        createDto.setEmail("oldTest@gmail.com");
-
+        UserDto createDto = new UserDto("oldTest", "oldTest@gmail.com");
 
         mockMvc.perform(post(USER_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -117,18 +107,13 @@ public class UserControllerTest {
 
         Long id = userRepository.findAll().stream().findFirst().get().getId();
 
-        UserDto updateDto = new UserDto();
-        updateDto.setUsername("newTest");
-        updateDto.setEmail("newTest@gmail.com");
+        UserDto updateDto = new UserDto("newTest", "newTest@gmail.com");
 
-        mockMvc.perform(put("/users/{id}", id)
+        mockMvc.perform(put(USER_URL + "/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateDto)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-
-        entityManager.flush();
-        entityManager.clear();
 
         User updatedUser = userRepository.findById(id).get();
 
@@ -137,10 +122,8 @@ public class UserControllerTest {
     }
 
     @Test
-    void updateUser_shouldFail_whenUsernameIsEmpty() throws Exception {
-        UserDto createDto = new UserDto();
-        createDto.setUsername("oldTest");
-        createDto.setEmail("oldTest@gmail.com");
+    void updateUserShouldFailWhenUsernameIsEmpty() throws Exception {
+        UserDto createDto = new UserDto("oldTest","oldTest@gmail.com");
 
         mockMvc.perform(post(USER_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -150,18 +133,13 @@ public class UserControllerTest {
 
         Long id = userRepository.findAll().stream().findFirst().get().getId();
 
-        UserDto updateDto = new UserDto();
-        updateDto.setUsername("");
-        updateDto.setEmail("newTest@gmail.com");
+        UserDto updateDto = new UserDto("", "newTest@gmail.com");
 
-        mockMvc.perform(put("/users/{id}", id)
+        mockMvc.perform(put(USER_URL + "/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateDto)))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-
-        entityManager.flush();
-        entityManager.clear();
 
         User updatedUser = userRepository.findById(id).get();
 
@@ -170,14 +148,10 @@ public class UserControllerTest {
     }
 
     @Test
-    void updateUser_shouldFail_whenEmailIsEmpty() throws Exception {
+    void updateUserShouldFailWhenEmailIsEmpty() throws Exception {
+        UserDto createDto = new UserDto("oldTest", "oldTest@gmail.com");
 
-        UserDto createDto = new UserDto();
-
-        createDto.setUsername("oldTest");
-        createDto.setEmail("oldTest@gmail.com");
-
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post(USER_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createDto)))
                 .andDo(print())
@@ -186,18 +160,13 @@ public class UserControllerTest {
 
         Long id = userRepository.findAll().stream().findFirst().get().getId();
 
-        UserDto updateDto = new UserDto();
-        updateDto.setUsername("newTest");
-        updateDto.setEmail("");
+        UserDto updateDto = new UserDto("newTest", "");
 
-        mockMvc.perform(put("/users/{id}", id)
+        mockMvc.perform(put(USER_URL + "/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateDto)))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-
-        entityManager.flush();
-        entityManager.clear();
 
         User updatedUser = userRepository.findById(id).get();
 
@@ -206,12 +175,9 @@ public class UserControllerTest {
     }
 
     @Test
-    void updateUser_shouldFail_whenEmailIsInvalid() throws Exception {
+    void updateUserShouldFailWhenEmailIsInvalid() throws Exception {
 
-        UserDto createDto = new UserDto();
-
-        createDto.setUsername("oldTest");
-        createDto.setEmail("oldTest@gmail.com");
+        UserDto createDto = new UserDto("oldTest","oldTest@gmail.com");
 
         mockMvc.perform(post(USER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -222,18 +188,13 @@ public class UserControllerTest {
 
         Long id = userRepository.findAll().stream().findFirst().get().getId();
 
-        UserDto updateDto = new UserDto();
-        updateDto.setUsername("newTest");
-        updateDto.setEmail("abobka123");
+        UserDto updateDto = new UserDto("newTest","abobka123");
 
-        mockMvc.perform(put("/users/{id}", id)
+        mockMvc.perform(put(USER_URL + "/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDto)))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-
-        entityManager.flush();
-        entityManager.clear();
 
         User updatedUser = userRepository.findById(id).get();
 
@@ -243,9 +204,7 @@ public class UserControllerTest {
 
     @Test
     void getUserById() throws Exception {
-         UserDto userDto = new UserDto();
-         userDto.setUsername("newTest");
-         userDto.setEmail("newTest@gmail.com");
+         UserDto userDto = new UserDto("newTest", "newTest@gmail.com");
 
         mockMvc.perform(post(USER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -255,27 +214,23 @@ public class UserControllerTest {
 
         Long id = userRepository.findAll().stream().findFirst().get().getId();
 
-          mockMvc.perform(get("/users/{id}", id))
+          mockMvc.perform(get(USER_URL + "/{id}", id))
                   .andDo(print())
                   .andExpect(status().isOk())
                   .andExpect(jsonPath("$.username").value("newTest"))
                   .andExpect(jsonPath("$.email").value("newTest@gmail.com"));
-
     }
 
     @Test
-    void getUserById_shouldFail_whenIdIsIncorrect() throws Exception {
-
-        mockMvc.perform(get("/users/{id}", 999))
+    void getUserByIdShouldFailWhenIdIsIncorrect() throws Exception {
+        mockMvc.perform(get(USER_URL + "/{id}", 999))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void getUserByUsername() throws Exception {
-        UserDto userDto = new UserDto();
-        userDto.setUsername("newTest");
-        userDto.setEmail("newTest@gmail.com");
+        UserDto userDto = new UserDto("newTest", "newTest@gmail.com");
 
         mockMvc.perform(post(USER_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -283,7 +238,7 @@ public class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated());
 
-        mockMvc.perform(get("/users/username/{username}", userDto.getUsername()))
+        mockMvc.perform(get(USER_URL + "/username/{username}", userDto.username()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value("newTest"))
@@ -291,18 +246,16 @@ public class UserControllerTest {
     }
 
     @Test
-    void getUserByUsername_shouldFail_whenUsernameIsIncorrect() throws Exception {
+    void getUserByUsernameShouldFailWhenUsernameIsIncorrect() throws Exception {
 
-        mockMvc.perform(get("/users/username/{username}", "alesha"))
+        mockMvc.perform(get(USER_URL + "/username/{username}", "alesha"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void getUserByEmail() throws Exception {
-        UserDto userDto = new UserDto();
-        userDto.setUsername("newTest");
-        userDto.setEmail("newTest@gmail.com");
+        UserDto userDto = new UserDto("newTest", "newTest@gmail.com");
 
         mockMvc.perform(post(USER_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -310,7 +263,7 @@ public class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated());
 
-        mockMvc.perform(get("/users/email/{email}", userDto.getEmail()))
+        mockMvc.perform(get(USER_URL + "/email/{email}", userDto.email()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value("newTest"))
@@ -318,19 +271,17 @@ public class UserControllerTest {
     }
 
     @Test
-    void getUserByEmail_shouldFail_whenEmailIsIncorrect() throws Exception {
-        mockMvc.perform(get("/users/email/{email}", "alesha"))
+    void getUserByEmailShouldFailWhenEmailIsIncorrect() throws Exception {
+        mockMvc.perform(get(USER_URL + "/email/{email}", "alesha"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void deleteUser() throws Exception {
-        UserDto userDto = new UserDto();
-        userDto.setUsername("newTest");
-        userDto.setEmail("newTest@gmail.com");
+    void deleteUserTestShouldDelete() throws Exception {
+        UserDto userDto = new UserDto("newTest", "newTest@gmail.com");
 
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post(USER_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userDto)))
                 .andDo(print())
@@ -338,7 +289,7 @@ public class UserControllerTest {
 
         Long id = userRepository.findAll().stream().findFirst().get().getId();
 
-        mockMvc.perform(delete("/users/{id}", id))
+        mockMvc.perform(delete(USER_URL + "/{id}", id))
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
@@ -346,8 +297,8 @@ public class UserControllerTest {
     }
 
     @Test
-    void deleteUser_shouldReturn404_whenUserNotFound() throws Exception {
-        mockMvc.perform(delete("/users/{id}", 999))
+    void deleteUserShouldReturn404WhenUserNotFound() throws Exception {
+        mockMvc.perform(delete(USER_URL + "/{id}", 999))
                 .andExpect(status().isNotFound());
     }
 }
